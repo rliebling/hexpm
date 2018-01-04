@@ -25,8 +25,8 @@ defmodule Hexpm.MixProject do
     ]
   end
 
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(:dev), do: ["lib", "test/support/fake.ex", "test/support/factory.ex"]
+  defp elixirc_paths(:test), do: ["lib", "hex/lib", "test/support"]
+  defp elixirc_paths(:dev), do: ["lib", "hex/lib", "test/support/fake.ex", "test/support/factory.ex"]
   defp elixirc_paths(_), do: ["lib"]
 
   defp gpb_options do
