@@ -8,6 +8,10 @@ defmodule Hexpm.Web.BlogController do
     ])
   end
 
+  def show(conn, %{"name" => "private-packages-and-organizations"}) do
+    redirect(conn, to: Routes.blog_path(Endpoint, :show, "001-private-packages-and-organizations"))
+  end
+
   def show(conn, %{"name" => name}) do
     if name in all_slugs() do
       render(conn, "#{name}.html", [
