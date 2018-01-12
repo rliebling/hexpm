@@ -17,6 +17,13 @@ defmodule Hexpm.Web.PageController do
     ])
   end
 
+  def pricing(conn, _params) do
+    render(conn, "pricing.html", [
+      title: "Pricing",
+      container: "container page pricing"
+    ])
+  end
+
   def sponsors(conn, _params) do
     render(conn, "sponsors.html", [
       title: "Sponsors",
