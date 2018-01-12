@@ -2,19 +2,18 @@ defmodule Hexpm.Web.BlogView do
   use Hexpm.Web, :view
 
   def render("index.html", _assigns) do
-    posts = Enum.flat_map(all_templates(), fn
-      "index.html" ->
-        []
-      name ->
-        content = render(name, %{})
+    posts =
+      Enum.map(all_templates(), fn {slug, template} ->
+        content = render(template, %{})
         content = Phoenix.HTML.safe_to_string(content)
-        [%{
-          slug: Path.rootname(name),
+
+        %{
+          slug: slug,
           title: title(content),
           subtitle: subtitle(content),
-          paragraph: first_paragraph(content),
-        }]
-    end)
+          paragraph: first_paragraph(content)
+        }
+      end)
 
     render_template("index.html", posts: posts)
   end
@@ -26,8 +25,15 @@ defmodule Hexpm.Web.BlogView do
   def all_templates() do
     Phoenix.Template.find_all(@phoenix_root)
     |> Enum.map(&Phoenix.Template.template_path_to_name(&1, @phoenix_root))
-    |> Enum.sort()
-    |> Enum.reverse()
+    |> Enum.flat_map(fn
+         <<n1, n2, n3, "-", slug::binary>> = template
+         when n1 in ?0..?9 and n2 in ?0..?9 and n3 in ?0..?9 ->
+           [{slug, template}]
+
+         _other ->
+           []
+       end)
+    |> Enum.sort_by(&elem(&1, 0), &</2)
   end
 
   defp first_paragraph(content) do
