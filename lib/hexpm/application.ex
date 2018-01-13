@@ -15,13 +15,19 @@ defmodule Hexpm.Application do
       worker(PlugAttack.Storage.Ets, [Hexpm.Web.Plugs.Attack, [clean_period: 60_000]]),
       worker(Hexpm.Throttle, [[name: Hexpm.SESThrottle, rate: ses_rate, unit: 1000]]),
       supervisor(Hexpm.Web.Endpoint, []),
-    ]
+    ] ++ extra_children()
 
     File.mkdir_p(tmp_dir)
     shutdown_on_eof()
 
     opts = [strategy: :one_for_one, name: Hexpm.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  if Mix.env == :dev do
+    defp extra_children(), do: [DotLocal.child_spec("hex", Hexpm.Web.Endpoint, 8888)]
+  else
+    defp extra_children(), do: []
   end
 
   def config_change(changed, _new, removed) do
