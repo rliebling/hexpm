@@ -25,7 +25,7 @@ defmodule Hexpm.Application do
   end
 
   if Mix.env == :dev do
-    defp extra_children(), do: [DotLocal.child_spec("hex", Hexpm.Web.Endpoint, 8888)]
+    defp extra_children(), do: [DotLocal.child_spec(service: :hex, backend: Hexpm.Web.Endpoint, https: true)]
   else
     defp extra_children(), do: []
   end
